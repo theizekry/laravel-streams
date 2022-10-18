@@ -34,6 +34,8 @@
             console.log('--------------------------------------');
         });
 
+        // Whenever the total data length is equal the total data count,
+        // which means it was last chunk ( message ) therefore, we've to close the connection.
         if (result.dataCount === totalDataLength) {
             console.log('condition');
 
