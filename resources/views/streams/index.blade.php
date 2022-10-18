@@ -19,27 +19,27 @@
     const eventSource = new EventSource("/stream");
 
     eventSource.onmessage = function (event) {
-        const data = JSON.parse(event.data);
 
-        console.log('Is Last Chunk', event.data.isLastChunk);
+        const result = JSON.parse(event.data);
 
-        if (event.data.isLastChunk === 'last') {
-            console.log('inside last condition');
+        console.log('is last', result.is_last);
 
-            eventSource.stop();
+        if (! result.is_last) {
+            result.data.forEach(function(user) {
+
+                // console.log('data', user);
+
+                // console.log('ID:', user.id);
+                // console.log('Name:', user.name);
+                // console.log('Email:', user.email);
+                // console.log('verified_at:', user.email_verified_at);
+                //
+                console.log('--------------------------------------');
+            });
+        } else {
+            eventSource.close();
         }
-
-        data.forEach(function(user) {
-
-            console.log('ID:', user.id);
-            console.log('Name:', user.name);
-            console.log('Email:', user.email);
-            console.log('verified_at:', user.email_verified_at);
-
-            console.log('--------------------------------------');
-        });
     };
-
 
 </script>
 </body>
