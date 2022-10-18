@@ -18,30 +18,19 @@ class EventStreamController extends Controller
 
         $countOfUsers = User::count();
 
-        $chunk = 100;
-
-        // this many times the loop should go on
-        $iterations = ceil($countOfUsers / $chunk);
+        $chunk = 5000;
 
         $response = new StreamedResponse();
 
-        $response->setCallback(function () use ($chunk, $iterations) {
+        $response->setCallback(function () use ($chunk, $countOfUsers) {
 
-            User::chunk($chunk, function($users) use ($iterations) {
-
+            User::chunk($chunk, function($users) use ($countOfUsers) {
                 $data = [
                     'data' => $users,
-                    'is_last' => (Cache::get('counter', 1) === $iterations),
+                    'dataCount' => $countOfUsers,
                 ];
 
-                if (! empty($users))  {
-                    echo 'data: ' . json_encode($data). "\n\n";
-
-                    ob_flush();
-                    flush();
-
-                    Cache::increment('counter');
-                }
+                echo 'data: ' . json_encode($data). "\n\n";
 
                 if (connection_aborted()) {
                     return;

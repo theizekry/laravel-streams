@@ -11,34 +11,35 @@
 
 <h1 class="text-bold">Laravel Streaming</h1>
 
-<p class="p-">
-
-</p>
-
 <script>
+
+    let totalDataLength = 0;
+
     const eventSource = new EventSource("/stream");
 
     eventSource.onmessage = function (event) {
 
         const result = JSON.parse(event.data);
 
-        console.log('is last', result.is_last);
+        totalDataLength += result.data.length;
+        console.log('totalDataLength', totalDataLength);
 
-        if (! result.is_last) {
-            result.data.forEach(function(user) {
+        result.data.forEach(function(user) {
 
-                // console.log('data', user);
+            console.log('ID:', user.id);
+            console.log('Name:', user.name);
+            console.log('Email:', user.email);
+            console.log('verified_at:', user.email_verified_at);
 
-                // console.log('ID:', user.id);
-                // console.log('Name:', user.name);
-                // console.log('Email:', user.email);
-                // console.log('verified_at:', user.email_verified_at);
-                //
-                console.log('--------------------------------------');
-            });
-        } else {
+            console.log('--------------------------------------');
+        });
+
+        if (result.dataCount === totalDataLength) {
+            console.log('condition');
+
             eventSource.close();
         }
+
     };
 
 </script>
